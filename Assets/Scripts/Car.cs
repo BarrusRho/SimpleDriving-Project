@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MobileGameDev.SimpleDriving
 {
@@ -17,6 +18,14 @@ namespace MobileGameDev.SimpleDriving
             transform.Rotate(0f, _steerValue * _turnSpeed * Time.deltaTime, 0f);
 
             transform.Translate(Vector3.forward * _carSpeed * Time.deltaTime);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if(other.CompareTag("Obstacle") == true)
+            {
+                SceneManager.LoadSceneAsync("MainMenu");
+            }
         }
 
         public void Steer(int value)
