@@ -7,6 +7,7 @@ namespace MobileGameDev.SimpleDriving
 {
     public class MainMenu : MonoBehaviour
     {
+        [SerializeField] private NotificationHandler _notificationHandler;
         [SerializeField] private TMP_Text _highScoreText;
         [SerializeField] private TMP_Text _energyText;
         [SerializeField] private int _maxEnergy;
@@ -61,6 +62,7 @@ namespace MobileGameDev.SimpleDriving
             {
                 DateTime energyRecharged = DateTime.Now.AddMinutes(_energyRechargeDuration);
                 PlayerPrefs.SetString(EnergyRechargedKey, energyRecharged.ToString());
+                _notificationHandler.ScheduleNotification(energyRecharged);
             }
 
             SceneManager.LoadSceneAsync("Game");
