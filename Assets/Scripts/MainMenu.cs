@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 namespace MobileGameDev.SimpleDriving
 {
@@ -10,6 +11,7 @@ namespace MobileGameDev.SimpleDriving
         [SerializeField] private NotificationHandler _notificationHandler;
         [SerializeField] private TMP_Text _highScoreText;
         [SerializeField] private TMP_Text _energyText;
+        [SerializeField] private Button _playButton;
         [SerializeField] private int _maxEnergy;
         [SerializeField] private int _energyRechargeDuration;
 
@@ -20,6 +22,15 @@ namespace MobileGameDev.SimpleDriving
 
         private void Start()
         {
+            OnApplicationFocus(true);
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus) { return;}
+
+            CancelInvoke();
+
             int currentHighScore = PlayerPrefs.GetInt(ScoreSystem.HighScoreKey, 0);
 
             _highScoreText.text = $"High Score: {currentHighScore}";
@@ -42,8 +53,21 @@ namespace MobileGameDev.SimpleDriving
                     _energy = _maxEnergy;
                     PlayerPrefs.SetInt(EnergyKey, _maxEnergy);
                 }
+                else
+                {
+                    _playButton.interactable = false;
+                    Invoke((nameof(EnergyRecharged)), (energyRecharged - DateTime.Now).Seconds);
+                }
             }
 
+            _energyText.text = $"Play ({_energy})";
+        }
+
+        private void EnergyRecharged()
+        {
+            _playButton.interactable = true;
+            _energy = _maxEnergy;
+            PlayerPrefs.SetInt(EnergyKey, _maxEnergy);
             _energyText.text = $"Play ({_energy})";
         }
 
@@ -62,7 +86,10 @@ namespace MobileGameDev.SimpleDriving
             {
                 DateTime energyRecharged = DateTime.Now.AddMinutes(_energyRechargeDuration);
                 PlayerPrefs.SetString(EnergyRechargedKey, energyRecharged.ToString());
+
+#if UNITY_ANDROID
                 _notificationHandler.ScheduleNotification(energyRecharged);
+#endif
             }
 
             SceneManager.LoadSceneAsync("Game");

@@ -274,6 +274,7 @@ MonoBehaviour:
   _notificationHandler: {fileID: 298939566}
   _highScoreText: {fileID: 1456624332}
   _energyText: {fileID: 1816189030}
+  _playButton: {fileID: 1913438464}
   _maxEnergy: 5
   _energyRechargeDuration: 1
 --- !u!114 &298939566
